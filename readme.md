@@ -25,7 +25,7 @@ There are two main datasets available:
 We used two different split of the data, **kitti** and **eigen**, amounting for respectively 29000 and 22600 training samples, you can find them in the [filenames](utils/filenames) folder.  
 You can download the entire raw dataset by running:
 ```shell
-wget -i utils/filenames/kitti_files_to_download.txt -P ~/my/output/folder/
+wget -i utils/kitti_files_to_download.txt -P ~/my/output/folder/
 ```
 **Warning:** it weights about **175GB**, make sure you have enough space to unzip too!  
 To save space you can convert the png images to jpeg.
