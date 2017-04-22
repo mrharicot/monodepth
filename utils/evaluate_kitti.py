@@ -38,14 +38,14 @@ if __name__ == '__main__':
             gt_depths.append(depth.astype(np.float32))
 
             disp_pred = cv2.resize(pred_disparities[t_id], (im_sizes[t_id][1], im_sizes[t_id][0]), interpolation=cv2.INTER_LINEAR)
-            # disp_pred = disp_pred * disp_pred.shape[1]
+            disp_pred = disp_pred * disp_pred.shape[1]
 
-            # # need to convert from disparity to depth
-            # focal_length, baseline = get_focal_length_baseline(gt_calib[t_id], camera_id)
-            # depth_pred = (baseline * focal_length) / disp_pred
-            # depth_pred[np.isinf(depth_pred)] = 0
+            # need to convert from disparity to depth
+            focal_length, baseline = get_focal_length_baseline(gt_calib[t_id], camera_id)
+            depth_pred = (baseline * focal_length) / disp_pred
+            depth_pred[np.isinf(depth_pred)] = 0
 
-            pred_depths.append(disp_pred)
+            pred_depths.append(depth_pred)
 
     rms     = np.zeros(num_samples, np.float32)
     log_rms = np.zeros(num_samples, np.float32)
