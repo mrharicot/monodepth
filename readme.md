@@ -58,7 +58,7 @@ Please look at the [main file](monodepth_main.py) for all the available options.
 To test change the `--mode` flag to `test`, the network will output the disparities in the model folder or in any other folder you specify wiht `--output_directory`:  
 ```shell
 python monodepth_main.py --mode test --data_path ~/data/KITTI/ \
---filenames_file ~/code/monodepth/utils/filenames/kitti_test_files.txt --log_directory ~/tmp/ \
+--filenames_file ~/code/monodepth/utils/filenames/kitti_stereo_2015_test_files.txt --log_directory ~/tmp/ \
 --checkpoint_path ~/tmp/my_model/model-181250
 ```
 If your test filenames contain two files per line the model will ignore the second one, unless you use the `--do_stereo` flag.
