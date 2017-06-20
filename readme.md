@@ -61,6 +61,7 @@ python monodepth_main.py --mode test --data_path ~/data/KITTI/ \
 --filenames_file ~/code/monodepth/utils/filenames/kitti_stereo_2015_test_files.txt --log_directory ~/tmp/ \
 --checkpoint_path ~/tmp/my_model/model-181250
 ```
+**Please note that there is NO extension after the checkpoint name**  
 If your test filenames contain two files per line the model will ignore the second one, unless you use the `--do_stereo` flag.
 The network will output two files `disparities.npy` and `disparities_pp.npy`, respecively for raw and post-processed disparities.
 
