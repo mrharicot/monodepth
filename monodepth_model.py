@@ -289,7 +289,7 @@ class MonodepthModel(object):
             with tf.variable_scope('model', reuse=self.reuse_variables):
 
                 self.left_pyramid  = self.scale_pyramid(self.left,  4)
-                if self.mode == 'train' and not self.params.do_stereo:
+                if self.mode == 'train':
                     self.right_pyramid = self.scale_pyramid(self.right, 4)
 
                 if self.params.do_stereo:
