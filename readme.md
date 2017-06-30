@@ -35,7 +35,7 @@ find ~/my/output/folder/ -name '*.png' | parallel 'convert {.}.png {.}.jpg && rm
 
 ### [Cityscapes](https://www.cityscapes-dataset.com)
 You will need to register in order to download the data, which already has a train/val/test set with 22973 training images.  
-We used `leftImg8bit_trainvaltest.zip` and `leftImg8bit_trainextra.zip` which weights **55GB**.
+We used `leftImg8bit_trainvaltest.zip`, `rightImg8bit_trainvaltest.zip`, `leftImg8bit_trainextra.zip` and `rightImg8bit_trainextra.zip` which weights **110GB**.
 
 ## Training
 The model's dataloader expects a data folder path as well as a list of filenames (relative to the root data folder):  
