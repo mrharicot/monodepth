@@ -55,7 +55,8 @@ By default the model only saves a reduced summary to save disk space, you can di
 Please look at the [main file](monodepth_main.py) for all the available options.
 
 ## Testing  
-To test change the `--mode` flag to `test`, the network will output the disparities in the model folder or in any other folder you specify wiht `--output_directory`:  
+To test change the `--mode` flag to `test`, the network will output the disparities in the model folder or in any other folder you specify wiht `--output_directory`.  
+You will also need to load the checkpoint you want to test on, this can be done with `--checkpoint_path`:  
 ```shell
 python monodepth_main.py --mode test --data_path ~/data/KITTI/ \
 --filenames_file ~/code/monodepth/utils/filenames/kitti_stereo_2015_test_files.txt --log_directory ~/tmp/ \
