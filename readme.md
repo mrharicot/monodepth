@@ -18,6 +18,13 @@ This code was tested with Tensorflow 1.0, CUDA 8.0 and Ubuntu 16.04.
 Training takes about 30 hours with the default parameters on the **kitti** split on a single Titan X machine.  
 You can train on multiple GPUs by setting them with the `--num_gpus` flag, make sure your `batch_size` is divisible by `num_gpus`.
 
+## I just want to try it on an image!
+There is a simple mode `monodepth_simple.py` which allows you to quickly run our model on a test image.  
+Make sure your first [download one of the pretrained models](#models)
+```shell
+python monodepth_simple.py --image_path ~/my_image.jpg --checkpoint_path ~/path/to/my/model
+```
+
 ## Data
 This model requires rectified stereo pairs for training.  
 There are two main datasets available: 
