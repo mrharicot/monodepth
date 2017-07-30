@@ -54,7 +54,12 @@ def test_simple(params):
 
     input_image = scipy.misc.imread(args.image_path)
 
-    original_height, original_width, num_channels = input_image.shape
+    if len(input_image.shape) == 2:
+        original_height, original_width = input_image.shape
+        num_channels = 1
+    else:
+        original_height, original_width, num_channels = input_image.shape
+        
     if num_channels == 4:
         input_image = input_image[:,:,:3]
     elif num_channels == 1:
