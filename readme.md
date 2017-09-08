@@ -20,10 +20,11 @@ You can train on multiple GPUs by setting them with the `--num_gpus` flag, make 
 
 ## I just want to try it on an image!
 There is a simple mode `monodepth_simple.py` which allows you to quickly run our model on a test image.  
-Make sure your first [download one of the pretrained models](#models)
+Make sure your first [download one of the pretrained models](#models) in this example we will use `model_cityscapes`.
 ```shell
-python monodepth_simple.py --image_path ~/my_image.jpg --checkpoint_path ~/path/to/my/model
+python monodepth_simple.py --image_path ~/my_image.jpg --checkpoint_path ~/models/model_cityscapes
 ```
+**Please note that there is NO extension after the checkpoint name**  
 
 ## Data
 This model requires rectified stereo pairs for training.  
