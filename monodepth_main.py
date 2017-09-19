@@ -1,10 +1,10 @@
-# Copyright UCL Business plc 2017. Patent Pending. All rights reserved. 
+# Copyright UCL Business plc 2017. Patent Pending. All rights reserved.
 #
 # The MonoDepth Software is licensed under the terms of the UCLB ACP-A licence
 # which allows for non-commercial use only, the full terms of which are made
 # available in the LICENSE file.
 #
-# For any other use of the software not covered by the UCLB ACP-A Licence, 
+# For any other use of the software not covered by the UCLB ACP-A Licence,
 # please contact info@uclb.com
 
 from __future__ import division
@@ -78,7 +78,7 @@ def train(params):
 
         # OPTIMIZER
         num_training_samples = count_text_lines(args.filenames_file)
-        
+
         steps_per_epoch = np.ceil(num_training_samples / params.batch_size).astype(np.int32)
         num_total_steps = params.num_epochs * steps_per_epoch
         start_learning_rate = args.learning_rate
@@ -86,7 +86,7 @@ def train(params):
         boundaries = [np.int32((3/5) * num_total_steps), np.int32((4/5) * num_total_steps)]
         values = [args.learning_rate, args.learning_rate / 2, args.learning_rate / 4]
         learning_rate = tf.train.piecewise_constant(global_step, boundaries, values)
-        
+
         opt_step = tf.train.AdamOptimizer(learning_rate)
 
         print("total number of samples: {}".format(num_training_samples))
@@ -123,7 +123,7 @@ def train(params):
         apply_gradient_op = opt_step.apply_gradients(grads, global_step=global_step)
 
         total_loss = tf.reduce_mean(tower_losses)
-        
+
         tf.summary.scalar('learning_rate', learning_rate, ['model_0'])
         tf.summary.scalar('total_loss', total_loss, ['model_0'])
         summary_op = tf.summary.merge_all('model_0')
@@ -136,7 +136,7 @@ def train(params):
         summary_writer = tf.summary.FileWriter(args.log_directory + '/' + args.model_name, sess.graph)
         train_saver = tf.train.Saver()
 
-        # COUNT PARAMS 
+        # COUNT PARAMS
         total_num_parameters = 0
         for variable in tf.trainable_variables():
             total_num_parameters += np.array(variable.get_shape().as_list()).prod()
@@ -150,8 +150,8 @@ def train(params):
 
         # LOAD CHECKPOINT IF SET
         if args.checkpoint_path != '':
-            train_saver.restore(sess, args.checkpoint_path)
-            
+            train_saver.restore(sess, args.checkpoint_path.split(".")[0])
+
             if args.retrain:
                 sess.run(global_step.assign(0))
 
@@ -181,7 +181,7 @@ def test(params):
     dataloader = MonodepthDataloader(args.data_path, args.filenames_file, params, args.dataset, args.mode)
     left  = dataloader.left_image_batch
     right = dataloader.right_image_batch
-    
+
     model = MonodepthModel(params, args.mode, left, right)
 
     # SESSION
@@ -201,7 +201,7 @@ def test(params):
     if args.checkpoint_path == '':
         restore_path = tf.train.latest_checkpoint(args.log_directory + '/' + args.model_name)
     else:
-        restore_path = args.checkpoint_path
+        restore_path = args.checkpoint_path.split(".")[0]
     train_saver.restore(sess, restore_path)
 
     num_test_samples = count_text_lines(args.filenames_file)
@@ -238,8 +238,8 @@ def main(_):
         do_stereo=args.do_stereo,
         wrap_mode=args.wrap_mode,
         use_deconv=args.use_deconv,
-        alpha_image_loss=args.alpha_image_loss, 
-        disp_gradient_loss_weight=args.disp_gradient_loss_weight, 
+        alpha_image_loss=args.alpha_image_loss,
+        disp_gradient_loss_weight=args.disp_gradient_loss_weight,
         lr_loss_weight=args.lr_loss_weight,
         full_summary=args.full_summary)
 
