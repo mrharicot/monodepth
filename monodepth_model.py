@@ -12,6 +12,7 @@
     http://visual.cs.ucl.ac.uk/pubs/monoDepth/
 """
 
+from __future__ import absolute_import, division, print_function
 from collections import namedtuple
 
 import numpy as np

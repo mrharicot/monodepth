@@ -7,7 +7,7 @@
 # For any other use of the software not covered by the UCLB ACP-A Licence,
 # please contact info@uclb.com
 
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
 # only keep warnings and errors
 import os
