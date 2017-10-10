@@ -105,7 +105,7 @@ class MonodepthDataloader(object):
         # if the dataset is cityscapes, we crop the last fifth to remove the car hood
         if self.dataset == 'cityscapes':
             o_height    = tf.shape(image)[0]
-            crop_height = (o_height * 4) / 5
+            crop_height = (o_height * 4) // 5
             image  =  image[:crop_height,:,:]
 
         image  = tf.image.convert_image_dtype(image,  tf.float32)
