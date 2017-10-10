@@ -46,6 +46,9 @@ You will need to register in order to download the data, which already has a tra
 We used `leftImg8bit_trainvaltest.zip`, `rightImg8bit_trainvaltest.zip`, `leftImg8bit_trainextra.zip` and `rightImg8bit_trainextra.zip` which weights **110GB**.
 
 ## Training
+
+**Warning:** The input sizes need to be mutiples of 128 for `vgg` or 64 for `resnet50` . 
+
 The model's dataloader expects a data folder path as well as a list of filenames (relative to the root data folder):  
 ```shell
 python monodepth_main.py --mode train --model_name my_model --data_path ~/data/KITTI/ \
