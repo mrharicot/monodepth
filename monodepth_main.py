@@ -7,7 +7,7 @@
 # For any other use of the software not covered by the UCLB ACP-A Licence,
 # please contact info@uclb.com
 
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
 # only keep warnings and errors
 import os
@@ -104,7 +104,7 @@ def train(params):
         tower_losses = []
         reuse_variables = None
         with tf.variable_scope(tf.get_variable_scope()):
-            for i in xrange(args.num_gpus):
+            for i in range(args.num_gpus):
                 with tf.device('/gpu:%d' % i):
 
                     model = MonodepthModel(params, args.mode, left_splits[i], right_splits[i], reuse_variables, i)

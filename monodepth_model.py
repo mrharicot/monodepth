@@ -12,6 +12,7 @@
     http://visual.cs.ucl.ac.uk/pubs/monoDepth/
 """
 
+from __future__ import absolute_import, division, print_function
 from collections import namedtuple
 
 import numpy as np
@@ -76,8 +77,8 @@ class MonodepthModel(object):
         w = s[2]
         for i in range(num_scales - 1):
             ratio = 2 ** (i + 1)
-            nh = h / ratio
-            nw = w / ratio
+            nh = h // ratio
+            nw = w // ratio
             scaled_imgs.append(tf.image.resize_area(img, [nh, nw]))
         return scaled_imgs
 
