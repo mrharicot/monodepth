@@ -102,8 +102,9 @@ Here are all the models available:
 * `model_cityscapes`: Our main model trained on **cityscapes**
 * `model_city2kitti`: `model_cityscapes` fine-tuned on **kitti**
 * `model_city2eigen`: `model_cityscapes` fine-tuned on **eigen**
+* `model_kitti_stereo`: Our stereo model trained on the **kitti** split for 12 epochs, make sure to use `--do_stereo` when using it
 
-All our models have a Resnet50 variant which you can get by adding `_resnet` to the model name.  
+All our models, except for stereo, have a Resnet50 variant which you can get by adding `_resnet` to the model name.  
 To test or train using these variants, you need to use the flag `--encoder resnet50`.
 
 ## Results
