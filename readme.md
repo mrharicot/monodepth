@@ -87,7 +87,7 @@ The `--split` flag allows you to choose which dataset you want to test on.
 * `kitti` corresponds to the 200 official training set pairs from [KITTI stereo 2015](http://www.cvlibs.net/datasets/kitti/eval_scene_flow.php?benchmark=stereo).  
 * `eigen` corresponds to the 697 test images used by [Eigen NIPS14](http://www.cs.nyu.edu/~deigen/depth/) and uses the raw LIDAR points.
 
-The results on the Eigen split are usually cropped, which you can do by passing the `--garg_crop` flag.
+**Warning**: The results on the Eigen split are usually cropped, which you can do by passing the `--garg_crop` flag.
 
 ## Models
 You can download our pre-trained models to an existing directory by running:  
