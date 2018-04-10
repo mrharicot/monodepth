@@ -128,7 +128,7 @@ If you find our work useful in your research please consider citing our paper:
 [![Screenshot](https://img.youtube.com/vi/go3H2gU-Zck/0.jpg)](https://www.youtube.com/watch?v=go3H2gU-Zck)
 
 ## License
-Copyright © UCL Business plc 2017. Patent Pending.
+Copyright © Niantic, Inc. 2018. Patent Pending.
 All rights reserved.
 
 This Software is licensed under the terms of the UCLB ACP-A Licence which allows for non-commercial use only, the full terms of which are made available in the [LICENSE](LICENSE) file. For any other use of the software not covered by the terms of this licence, please contact info@uclb.com
