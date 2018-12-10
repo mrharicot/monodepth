@@ -29,11 +29,13 @@ from average_gradients import *
 parser = argparse.ArgumentParser(description='Monodepth TensorFlow implementation.')
 
 parser.add_argument('--encoder',          type=str,   help='type of encoder, vgg or resnet50', default='vgg')
-parser.add_argument('--image_path',       type=str,   help='path to the image', required=True)
+parser.add_argument('--image_folder',       type=str,   help='path to the directory', required=True)
 parser.add_argument('--checkpoint_path',  type=str,   help='path to a specific checkpoint to load', required=True)
 parser.add_argument('--input_height',     type=int,   help='input height', default=256)
 parser.add_argument('--input_width',      type=int,   help='input width', default=512)
-parser.add_argument('--output_path',      type=str,   help='output path', required=False)
+parser.add_argument('--output_width',     type=int,    help='output width', default=512)
+parser.add_argument('--output_height',    type=int,    help='output height', default=256)
+
 
 args = parser.parse_args()
 
@@ -47,17 +49,9 @@ def post_process_disparity(disp):
     r_mask = np.fliplr(l_mask)
     return r_mask * l_disp + l_mask * r_disp + (1.0 - l_mask - r_mask) * m_disp
 
-def test_simple(params):
-    """Test function."""
-
+def make_data(params):
     left  = tf.placeholder(tf.float32, [2, args.input_height, args.input_width, 3])
     model = MonodepthModel(params, "test", left, None)
-
-    input_image = scipy.misc.imread(args.image_path, mode="RGB")
-    original_height, original_width, num_channels = input_image.shape
-    input_image = scipy.misc.imresize(input_image, [args.input_height, args.input_width], interp='lanczos')
-    input_image = input_image.astype(np.float32) / 255
-    input_images = np.stack((input_image, np.fliplr(input_image)), 0)
 
     # SESSION
     config = tf.ConfigProto(allow_soft_placement=True)
@@ -76,19 +70,26 @@ def test_simple(params):
     restore_path = args.checkpoint_path.split(".")[0]
     train_saver.restore(sess, restore_path)
 
-    disp = sess.run(model.disp_left_est[0], feed_dict={left: input_images})
-    print('shape of disparity:', np.shape(disp))
-    disp_pp = post_process_disparity(disp.squeeze()).astype(np.float32)
-
-    output_directory = os.path.dirname(args.image_path)
-    if args.output_path is not None:
-        output_directory = os.path.dirname(args.output_path)
-    print('output_directory:', output_directory)
-    output_name = os.path.splitext(os.path.basename(args.image_path))[0]
-
-    np.save(os.path.join(output_directory, "{}_disp.npy".format(output_name)), disp_pp)
-    disp_to_img = scipy.misc.imresize(disp_pp.squeeze(), [original_height, original_width])
-    plt.imsave(os.path.join(output_directory, "{}_disp.png".format(output_name)), disp_to_img, cmap='plasma')
+    print('image_folder:', args.image_folder)
+    for root, dirs, files in os.walk(args.image_folder):
+        for file in files:
+            directory = root + '/'
+            if 'jpg' in file and file[0] is not '.':
+                image_path = directory + file
+                input_image = scipy.misc.imread(image_path, mode="RGB")
+                original_height, original_width, num_channels = input_image.shape
+                input_image = scipy.misc.imresize(input_image, [args.input_height, args.input_width], interp='lanczos')
+                input_image = input_image.astype(np.float32) / 255
+                input_images = np.stack((input_image, np.fliplr(input_image)), 0)
+                disp = sess.run(model.disp_left_est[0], feed_dict={left: input_images})
+                disp_pp = post_process_disparity(disp.squeeze()).astype(np.float32)
+                output_name = os.path.splitext(os.path.basename(image_path))[0]
+                npy_filepath = os.path.join(directory, "{}_disp.npy".format(output_name))
+                png_filepath = os.path.join(directory, "{}_disp.png".format(output_name))
+                np.save(npy_filepath, disp_pp)
+                disp_to_img = scipy.misc.imresize(disp_pp.squeeze(), [args.output_height, args.output_width], interp='nearest')
+                plt.imsave(png_filepath, disp_to_img, cmap='plasma')
+                print('depth map calculation complete for file:', image_path)
 
     print('done!')
 
@@ -109,7 +110,7 @@ def main(_):
         lr_loss_weight=0,
         full_summary=False)
 
-    test_simple(params)
+    make_data(params)
 
 if __name__ == '__main__':
     tf.app.run()
