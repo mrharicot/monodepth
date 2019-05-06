@@ -13,6 +13,14 @@ For more details:
 [project page](http://visual.cs.ucl.ac.uk/pubs/monoDepth/)  
 [arXiv](https://arxiv.org/abs/1609.03677)
 
+## 🆕 Are you looking for monodepth2?
+> **Digging Into Self-Supervised Monocular Depth Estimation  
+> Clément Godard, Oisin Mac Aodha, Michael Firman and Gabriel J. Brostow**  
+>  
+> Improved accuracy, monocular training, and shorter training times!  
+>  
+> [arXiv](https://arxiv.org/abs/1806.01260) | [code](https://github.com/nianticlabs/monodepth2)
+
 ## Requirements
 This code was tested with Tensorflow 1.0, CUDA 8.0 and Ubuntu 16.04.  
 Training takes about 30 hours with the default parameters on the **kitti** split on a single Titan X machine.  
