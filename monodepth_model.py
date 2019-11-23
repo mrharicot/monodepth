@@ -48,13 +48,18 @@ class MonodepthModel(object):
         self.reuse_variables = reuse_variables
 
         self.build_model()
-        self.build_outputs()
+        #if(self.mode == 'train' or self.mode == 'test'):
+        #    self.build_outputs()
 
         if self.mode == 'test':
+            #self.segmentation_losses()
             return
 
-        self.build_losses()
-        self.build_summaries()     
+        if(self.mode == 'train'):
+            self.build_losses()
+            self.build_summaries()
+        elif(self.mode == 'segment'):
+            self.segmentation_losses()
 
     def gradient_x(self, img):
         gx = img[:,:,:-1,:] - img[:,:,1:,:]
@@ -228,9 +233,47 @@ class MonodepthModel(object):
             concat1 = tf.concat([upconv1, udisp2], 3)
             iconv1  = conv(concat1,   16, 3, 1)
             self.disp1 = self.get_disp(iconv1)
+        
+        #with tf.variable_scope('decoder'):
+        #    upconv7 = upconv(conv7,  512, 3, 2) #H/64
+        #    concat7 = tf.concat([upconv7, skip6], 3)
+        #    iconv7  = conv(concat7,  512, 3, 1)
+#
+        #    upconv6 = upconv(iconv7, 512, 3, 2) #H/32
+        #    concat6 = tf.concat([upconv6, skip5], 3)
+        #    iconv6  = conv(concat6,  512, 3, 1)
+#
+        #    upconv5 = upconv(iconv6, 256, 3, 2) #H/16
+        #    concat5 = tf.concat([upconv5, skip4], 3)
+        #    iconv5  = conv(concat5,  256, 3, 1)
+#
+        #    upconv4 = upconv(iconv5, 128, 3, 2) #H/8
+        #    concat4 = tf.concat([upconv4, skip3], 3)
+        #    iconv4  = conv(concat4,  128, 3, 1)
+        #    #self.disp4 = self.get_disp(iconv4)
+        #    #udisp4  = self.upsample_nn(self.disp4, 2)
+#
+        #    upconv3 = upconv(iconv4,  64, 3, 2) #H/4
+        #    concat3 = tf.concat([upconv3, skip2], 3)
+        #    iconv3  = conv(concat3,   64, 3, 1)
+        #    #self.disp3 = self.get_disp(iconv3)
+        #    #udisp3  = self.upsample_nn(self.disp3, 2)
+#
+        #    upconv2 = upconv(iconv3,  32, 3, 2) #H/2
+        #    concat2 = tf.concat([upconv2, skip1], 3)
+        #    iconv2  = conv(concat2,   32, 3, 1)
+        #    #self.disp2 = self.get_disp(iconv2)
+        #    #udisp2  = self.upsample_nn(self.disp2, 2)
+#
+        #    upconv1 = upconv(iconv2,  33, 3, 2) #H
+        #    #concat1 = tf.concat([upconv1, udisp2], 3)
+        #    iconv1  = conv(upconv1,   33, 3, 1)
+        #    #self.disp1 = self.get_disp(iconv1)
+        #    self.logit = iconv1
 
     def build_resnet50(self):
         #set convenience functions
+        print("-------------------")
         conv   = self.conv
         if self.params.use_deconv:
             upconv = self.deconv
@@ -253,6 +296,38 @@ class MonodepthModel(object):
             skip5 = conv4
         
         # DECODING
+        #with tf.variable_scope('decoder'):
+        #    upconv6 = upconv(conv5,   512, 3, 2) #H/32
+        #    concat6 = tf.concat([upconv6, skip5], 3)
+        #    iconv6  = conv(concat6,   512, 3, 1)
+#
+        #    upconv5 = upconv(iconv6, 256, 3, 2) #H/16
+        #    concat5 = tf.concat([upconv5, skip4], 3)
+        #    iconv5  = conv(concat5,   256, 3, 1)
+#
+        #    upconv4 = upconv(iconv5,  128, 3, 2) #H/8
+        #    concat4 = tf.concat([upconv4, skip3], 3)
+        #    iconv4  = conv(concat4,   128, 3, 1)
+        #    self.disp4 = self.get_disp(iconv4)
+        #    udisp4  = self.upsample_nn(self.disp4, 2)
+#
+        #    upconv3 = upconv(iconv4,   64, 3, 2) #H/4
+        #    concat3 = tf.concat([upconv3, skip2, udisp4], 3)
+        #    iconv3  = conv(concat3,    64, 3, 1)
+        #    self.disp3 = self.get_disp(iconv3)
+        #    udisp3  = self.upsample_nn(self.disp3, 2)
+#
+        #    upconv2 = upconv(iconv3,   32, 3, 2) #H/2
+        #    concat2 = tf.concat([upconv2, skip1, udisp3], 3)
+        #    iconv2  = conv(concat2,    32, 3, 1)
+        #    self.disp2 = self.get_disp(iconv2)
+        #    udisp2  = self.upsample_nn(self.disp2, 2)
+#
+        #    upconv1 = upconv(iconv2,  16, 3, 2) #H
+        #    concat1 = tf.concat([upconv1, udisp2], 3)
+        #    iconv1  = conv(concat1,   16, 3, 1)
+        #    self.disp1 = self.get_disp(iconv1)
+        
         with tf.variable_scope('decoder'):
             upconv6 = upconv(conv5,   512, 3, 2) #H/32
             concat6 = tf.concat([upconv6, skip5], 3)
@@ -265,38 +340,39 @@ class MonodepthModel(object):
             upconv4 = upconv(iconv5,  128, 3, 2) #H/8
             concat4 = tf.concat([upconv4, skip3], 3)
             iconv4  = conv(concat4,   128, 3, 1)
-            self.disp4 = self.get_disp(iconv4)
-            udisp4  = self.upsample_nn(self.disp4, 2)
+            #self.disp4 = self.get_disp(iconv4)
+            #udisp4  = self.upsample_nn(self.disp4, 2)
 
             upconv3 = upconv(iconv4,   64, 3, 2) #H/4
-            concat3 = tf.concat([upconv3, skip2, udisp4], 3)
+            concat3 = tf.concat([upconv3, skip2], 3)
             iconv3  = conv(concat3,    64, 3, 1)
-            self.disp3 = self.get_disp(iconv3)
-            udisp3  = self.upsample_nn(self.disp3, 2)
+            #self.disp3 = self.get_disp(iconv3)
+            #udisp3  = self.upsample_nn(self.disp3, 2)
 
             upconv2 = upconv(iconv3,   32, 3, 2) #H/2
-            concat2 = tf.concat([upconv2, skip1, udisp3], 3)
+            concat2 = tf.concat([upconv2, skip1], 3)
             iconv2  = conv(concat2,    32, 3, 1)
-            self.disp2 = self.get_disp(iconv2)
-            udisp2  = self.upsample_nn(self.disp2, 2)
+            #self.disp2 = self.get_disp(iconv2)
+            #udisp2  = self.upsample_nn(self.disp2, 2)
 
-            upconv1 = upconv(iconv2,  16, 3, 2) #H
-            concat1 = tf.concat([upconv1, udisp2], 3)
-            iconv1  = conv(concat1,   16, 3, 1)
-            self.disp1 = self.get_disp(iconv1)
+            upconv1 = upconv(iconv2,  33, 3, 2) #H
+            #concat1 = tf.concat([upconv1, udisp2], 3)
+            iconv1  = conv(upconv1,   33, 3, 1, None)
+            #self.disp1 = self.get_disp(iconv1)
+            self.logit = iconv1
 
     def build_model(self):
         with slim.arg_scope([slim.conv2d, slim.conv2d_transpose], activation_fn=tf.nn.elu):
             with tf.variable_scope('model', reuse=self.reuse_variables):
 
-                self.left_pyramid  = self.scale_pyramid(self.left,  4)
-                if self.mode == 'train':
-                    self.right_pyramid = self.scale_pyramid(self.right, 4)
+                #self.left_pyramid  = self.scale_pyramid(self.left,  4)
+                #if self.mode == 'train':
+                #    self.right_pyramid = self.scale_pyramid(self.right, 4)
 
-                if self.params.do_stereo:
-                    self.model_input = tf.concat([self.left, self.right], 3)
-                else:
-                    self.model_input = self.left
+                #if self.params.do_stereo:
+                #    self.model_input = tf.concat([self.left, self.right], 3)
+                #else:
+                self.model_input = self.left
 
                 #build model
                 if self.params.encoder == 'vgg':
@@ -330,6 +406,21 @@ class MonodepthModel(object):
         with tf.variable_scope('smoothness'):
             self.disp_left_smoothness  = self.get_disparity_smoothness(self.disp_left_est,  self.left_pyramid)
             self.disp_right_smoothness = self.get_disparity_smoothness(self.disp_right_est, self.right_pyramid)
+
+    
+    def segmentation_losses(self):
+        with tf.variable_scope('segmentation_losses', reuse=self.reuse_variables):
+            #self.right  = tf.image.convert_image_dtype(self.right,  tf.int32, saturate = True)
+            #self.right  = tf.image.rgb_to_grayscale(self.right)
+            print(self.right)
+            scaled_labels = tf.reshape(self.right, shape=[-1])
+            
+            self.one_hot_label = slim.one_hot_encoding(scaled_labels, 33, on_value=1.0, off_value=0.0)
+            #print(self.one_hot_label)
+            #elf.one_hot_label = tf.reshape(self.one_hot_label, shape=[8, 1024, 2048, 33])
+            self.total_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=self.one_hot_label, logits=tf.reshape(self.logit, shape=[-1, 33])))
+            
+            #print(self.total_loss)
 
     def build_losses(self):
         with tf.variable_scope('losses', reuse=self.reuse_variables):
