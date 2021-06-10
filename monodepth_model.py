@@ -20,6 +20,7 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 
 from bilinear_sampler import *
+from disparity_filler_function import disparityFillerFunction
 
 monodepth_parameters = namedtuple('parameters', 
                         'encoder, '
@@ -313,6 +314,11 @@ class MonodepthModel(object):
             self.disp_left_est  = [tf.expand_dims(d[:,:,:,0], 3) for d in self.disp_est]
             self.disp_right_est = [tf.expand_dims(d[:,:,:,1], 3) for d in self.disp_est]
 
+        # Added Content for Filled Disparity Loss
+        with tf.variable_scope('filled_disparities'):
+            self.filled_disparities_left = [tf.stop_gradient(disparityFillerFunction(self.left_pyramid[i], self.disp_left_est[i])) for i in range(4)]
+            self.filled_disparities_right = [tf.stop_gradient(disparityFillerFunction(self.right_pyramid[i], self.disp_right_est[i])) for i in range(4)]
+
         if self.mode == 'test':
             return
 
@@ -361,8 +367,17 @@ class MonodepthModel(object):
             self.lr_right_loss = [tf.reduce_mean(tf.abs(self.left_to_right_disp[i] - self.disp_right_est[i])) for i in range(4)]
             self.lr_loss = tf.add_n(self.lr_left_loss + self.lr_right_loss)
 
+            # FILLED DISPARITY
+            # Added Content for Filled Disparity Loss
+            self.l1_left_disp = [tf.abs(self.disp_left_est[i] - self.filled_disparities_left[i]) for i in range(4)]
+            self.l1_left_disp_loss = [tf.reduce_mean(self.l1_left_disp[i]) for i in range(4)]
+            self.l1_right_disp = [tf.abs(self.disp_right_est[i] - self.filled_disparities_right[i]) for i in range(4)]
+            self.l1_right_disp_loss = [tf.reduce_mean(self.l1_right_disp[i]) for i in range(4)]
+            self.l1_disp_fill_loss = tf.add_n(self.l1_left_disp_loss + self.l1_right_disp_loss)
+
             # TOTAL LOSS
-            self.total_loss = self.image_loss + self.params.disp_gradient_loss_weight * self.disp_gradient_loss + self.params.lr_loss_weight * self.lr_loss
+            self.total_loss = self.image_loss + self.params.disp_gradient_loss_weight * self.disp_gradient_loss + self.params.lr_loss_weight * self.lr_loss \
+            + self.params.filled_disparity_loss_weight*self.l1_disp_fill_loss
 
     def build_summaries(self):
         # SUMMARIES
