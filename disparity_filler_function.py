@@ -1,3 +1,9 @@
+# Liscence Information
+
+""" Disparity Filler Function model for filling disparity maps from edges
+    by Benjamin Keltjens, Tom van Dijk and Guido de Croon 
+"""
+
 import tensorflow as tf
 import numpy as np
 
@@ -231,8 +237,10 @@ def disparityFillerFunction(images, disparities, name='untextured_filler', **kwa
     with tf.variable_scope(name):
         # Get shape of input tensor
         
+        # Get sparse disparity map
         sparse_disparities = _getSparseDisparities(images, disparities)  
 
+        # Find shape of disparity map
         tensor_shape  = sparse_disparities.get_shape().as_list()
         _num_batch    = tensor_shape[0]
         _height       = tensor_shape[1]
@@ -245,5 +253,5 @@ def disparityFillerFunction(images, disparities, name='untextured_filler', **kwa
         # Run second pass to average out disparities
         averaged_disps = _smoothing(filled_disps, inv_mask_initial, iters)
 
-        # Return averaged disparity
+        # Return averaged filled disparity
         return averaged_disps
