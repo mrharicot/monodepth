@@ -150,7 +150,6 @@ def disparityFillerFunction(images, disparities, name='untextured_filler', **kwa
         sumKernel = _createSumKernel(3) # Create sum kernel
         mask = _getMask(sparse_disps) # Find mask of active pixels
         inv_mask_initial = _getInvMask(mask) # Get intial mask of inactive pixels
-        iters = width/2 # Set number of iteration half the width assuming its the assumed maximum amount of iterations
         
         count = tf.convert_to_tensor(0) # create counter as tensor
 
@@ -231,13 +230,14 @@ def disparityFillerFunction(images, disparities, name='untextured_filler', **kwa
 
     with tf.variable_scope(name):
         # Get shape of input tensor
-        tensor_shape  = disparities.get_shape().as_list()
+        
+        sparse_disparities = _getSparseDisparities(images, disparities)  
+
+        tensor_shape  = sparse_disparities.get_shape().as_list()
         _num_batch    = tensor_shape[0]
         _height       = tensor_shape[1]
         _width        = tensor_shape[2]
         _num_channels = tensor_shape[3]
-
-        sparse_disparities = _getSparseDisparities(images, disparities)
 
         # Run propagation step on sparse disparities
         filled_disps, inv_mask_initial, iters = _propagation(sparse_disparities, _num_batch, _num_channels, _height, _width)

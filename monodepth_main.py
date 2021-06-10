@@ -130,7 +130,8 @@ def train(params):
         summary_op = tf.summary.merge_all('model_0')
 
         # SESSION
-        config = tf.ConfigProto(allow_soft_placement=True)
+        gpu_options = tf.GPUOptions(allow_growth = True, visible_device_list=str(1))
+        config = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
         sess = tf.Session(config=config)
 
         # SAVER

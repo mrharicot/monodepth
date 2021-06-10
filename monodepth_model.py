@@ -34,6 +34,7 @@ monodepth_parameters = namedtuple('parameters',
                         'alpha_image_loss, '
                         'disp_gradient_loss_weight, '
                         'lr_loss_weight, '
+                        'filled_disparity_loss_weight, '
                         'full_summary')
 
 class MonodepthModel(object):
